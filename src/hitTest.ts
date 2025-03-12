@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { metadata as rows } from "./components/Map";
 import { player, position } from "./components/Player";
-
-const resultDOM = document.getElementById("result-container");
-const finalScoreDOM = document.getElementById("final-score");
+import { finalScoreDOM, resultDOM } from "./ui";
+import { gameState } from './gameState';
 
 export function hitTest() {
+  if (gameState.isGameOver()) return;
+  
   const row = rows[position.currentRow - 1];
   if (!row) return;
 
@@ -21,8 +22,9 @@ export function hitTest() {
 
       if (playerBoundingBox.intersectsBox(vehicleBoundingBox)) {
         if (!resultDOM || !finalScoreDOM) return;
-        resultDOM.style.visibility = "visible";
-        finalScoreDOM.innerText = position.currentRow.toString();
+
+        gameState.setGameOver();
+
       }
     });
   }

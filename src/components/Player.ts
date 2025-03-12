@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { endsUpInValidPosition } from "../utilities/endsUpInValidPosition";
 import { metadata as rows, addRows } from "./Map";
 import type { MoveDirection } from "../types";
+import { gameState } from '../gameState';
 
 export const player = Player();
 
@@ -53,6 +54,7 @@ export function initializePlayer() {
   player.position.x = 0;
   player.position.y = 0;
   player.children[0].position.z = 0;
+  player.children[0].rotation.z = 0;
 
   // Initialize metadata
   position.currentRow = 0;
@@ -63,6 +65,8 @@ export function initializePlayer() {
 }
 
 export function queueMove(direction: MoveDirection) {
+  if (gameState.isGameOver()) return;
+
   const isValidMove = endsUpInValidPosition(
     {
       rowIndex: position.currentRow,

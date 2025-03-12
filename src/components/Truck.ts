@@ -1,6 +1,17 @@
 import * as THREE from "three";
 import { tileSize } from "../constants";
 import { Wheel } from "./Wheel";
+import { createTexture } from "../utilities/textureUtils";
+
+export const truckFrontTexture = createTexture(30, 30, [
+  { x: 5, y: 0, w: 10, h: 30 },
+]);
+export const truckRightSideTexture = createTexture(25, 30, [
+  { x: 15, y: 5, w: 10, h: 10 },
+]);
+export const truckLeftSideTexture = createTexture(25, 30, [
+  { x: 15, y: 15, w: 10, h: 10 },
+]);
 
 export function Truck(
   initialTileIndex: number,
@@ -24,14 +35,34 @@ export function Truck(
   cargo.castShadow = true;
   truck.add(cargo);
 
-  const cabin = new THREE.Mesh(
-    new THREE.BoxGeometry(30, 30, 30),
-    new THREE.MeshLambertMaterial({ color, flatShading: true })
-  );
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(30, 30, 30), [
+    new THREE.MeshLambertMaterial({
+      color,
+      flatShading: true,
+      map: truckFrontTexture,
+    }), // front
+    new THREE.MeshLambertMaterial({
+      color,
+      flatShading: true,
+    }), // back
+    new THREE.MeshLambertMaterial({
+      color,
+      flatShading: true,
+      map: truckLeftSideTexture,
+    }),
+    new THREE.MeshLambertMaterial({
+      color,
+      flatShading: true,
+      map: truckRightSideTexture,
+    }),
+    new THREE.MeshPhongMaterial({ color, flatShading: true }), // top
+    new THREE.MeshPhongMaterial({ color, flatShading: true }), // bottom
+  ]);
   cabin.position.x = 35;
   cabin.position.z = 20;
-  cabin.receiveShadow = true;
   cabin.castShadow = true;
+  cabin.receiveShadow = true;
+
   truck.add(cabin);
 
   const frontWheel = Wheel(37);
